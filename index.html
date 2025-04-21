@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bezpečnostné Upozornenie</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: url('https://archive.org/download/brainsale/brainsale.gif') no-repeat center center fixed;
+      background-size: cover;
+      color: red;
+      font-family: monospace;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    #message {
+      font-size: 6vw;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 10px;
+      animation: glitch 1s infinite;
+    }
+
+    @keyframes glitch {
+      0% {
+        text-shadow: 0 0 5px red, 0 0 10px red, 0 0 15px red;
+        transform: skew(0.5deg);
+      }
+      25% {
+        text-shadow: 0 0 5px crimson, 0 0 10px crimson, 0 0 15px crimson;
+        transform: skew(-0.5deg);
+      }
+      50% {
+        text-shadow: 0 0 5px darkred, 0 0 10px darkred, 0 0 15px darkred;
+        transform: skew(0.5deg);
+      }
+      75% {
+        text-shadow: 0 0 5px red, 0 0 10px red, 0 0 15px red;
+        transform: skew(-0.5deg);
+      }
+      100% {
+        text-shadow: 0 0 5px crimson, 0 0 10px crimson, 0 0 15px crimson;
+        transform: skew(0deg);
+      }
+    }
+
+    #countdown {
+      font-size: 10vw;
+      margin-top: 20px;
+      color: crimson;
+      text-shadow: 0 0 10px red;
+    }
+
+    #btc-label {
+      font-size: 5vw;
+      margin-top: 30px;
+    }
+
+    #btc-input {
+      margin-top: 10px;
+      font-size: 5vw;
+      padding: 10px;
+      border: 2px solid red;
+      background: black;
+      color: red;
+      text-align: center;
+      width: 80vw;
+      max-width: 400px;
+    }
+
+    #tap {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      color: gray;
+      font-size: 4vw;
+      text-align: center;
+    }
+
+    /* Flashing red background */
+    body.flash {
+      animation: flash 0.1s 10;
+    }
+
+    @keyframes flash {
+      0%, 100% {
+        background-color: black;
+      }
+      50% {
+        background-color: red;
+      }
+    }
+
+    /* Hide cursor */
+    body {
+      cursor: none;
+    }
+
+    /* Shake effect */
+    @keyframes shake {
+      0% { transform: translate(0); }
+      25% { transform: translate(-10px, 0); }
+      50% { transform: translate(10px, 0); }
+      75% { transform: translate(-10px, 0); }
+      100% { transform: translate(10px, 0); }
+    }
+
+    /* Decrypt Button */
+    #decryptBtn {
+      margin-top: 20px;
+      padding: 15px;
+      font-size: 3vw;
+      border: 2px solid red;
+      color: red;
+      background: black;
+      cursor: pointer;
+    }
+
+    #decryptBtn:hover {
+      background: red;
+      color: black;
+    }
+
+    /* System crash screen */
+    #crashScreen {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      color: red;
+      text-align: center;
+      padding-top: 20%;
+    }
+  </style>
+</head>
+<body>
+  <div id="message">
+    máte vírus<br>
+    zaplaťte 1,000 bitcoinou<br>
+    a vrátime vám dáta
+  </div>
+
+  <div id="countdown">10:00</div>
+
+  <div id="btc-label">adresa bitcoinu</div>
+  <input type="text" id="btc-input" value="1b14f1b4c1fG4
+g1fg4" readonly>
+
+  <div id="tap">()</div>
+
+  <button id="decryptBtn">Dekryptujte súbory</button>
+
+  <div id="crashScreen">
+    <h1>Critical System Failure!</h1>
+    <p>Attempting to recover...</p>
+  </div>
+
+  <!-- Background music -->
+  <audio id="bgMusic" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop></audio>
+
+
+
+  <script>
+    // Fullscreen and start everything on tap
+    document.body.addEventListener('click', () => {
+      // Fullscreen
+      const el = document.documentElement;
+      if (el.requestFullscreen) el.requestFullscreen();
+      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      else if (el.msRequestFullscreen) el.msRequestFullscreen();
+
+      // Start speech and music
+      speakLoop();
+      document.getElementById('bgMusic').play();
+
+      // Start red flashing effect
+      document.body.classList.add('flash');
+
+      // Trigger system crash screen and sound after a few seconds
+      setTimeout(() => {
+        document.getElementById('crashScreen').style.display = 'block';
+        document.getElementById('crashSound').play(); // Play the crash sound
+      }, 8000);
+    });
+
+    // Countdown logic
+    let secondsLeft = 600; // 10 minutes
+    const countdownEl = document.getElementById('countdown');
+
+    function updateCountdown() {
+      const minutes = Math.floor(secondsLeft / 60).toString().padStart(2, '0');
+      const seconds = (secondsLeft % 60).toString().padStart(2, '0');
+      countdownEl.textContent = `${minutes}:${seconds}`;
+      if (secondsLeft > 0) {
+        secondsLeft--;
+        setTimeout(updateCountdown, 1000);
+      } else {
+        countdownEl.textContent = "Čas vypršal!";
+        countdownEl.style.color = "white";
+      }
+
+      // Shake the screen when time is about to run out
+      if (secondsLeft <= 30) {
+        document.body.style.animation = 'shake 0.1s 20';
+      }
+    }
+
+    updateCountdown();
+
+    // Speech loop: "máte vírus"
+    function speakLoop() {
+      const phrase = 'máte vírus';
+      const utter = new SpeechSynthesisUtterance(phrase);
+      utter.lang = 'sk-SK'; // Slovak
+      utter.rate = 1.0;
+      utter.pitch = 1.0;
+
+      utter.onend = () => {
+        // Loop every ~3 seconds
+        setTimeout(speakLoop, 3000);
+      };
+
+      window.speechSynthesis.speak(utter);
+    }
+
+    // Decrypt button click action
+    document.getElementById('decryptBtn').addEventListener('click', () => {
+      alert('Dekryptovanie sa zlyhalo. Skúste znova!');
+    });
+
+    // Block keyboard inputs to lock the victim out
+    document.addEventListener('keydown', (e) => {
+      e.preventDefault(); // Block all keys
+    });
+  </script>
+</body>
+</html>
